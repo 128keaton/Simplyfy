@@ -12,7 +12,6 @@ class PlaylistViewController: UITableViewController {
 
 	var session: SPTSession?
 
-
 	var auth: SPTAuth?
 	var playlists: [SPTPartialPlaylist]?
 	var selectedPlaylist: SPTPartialPlaylist?
@@ -26,22 +25,20 @@ class PlaylistViewController: UITableViewController {
 
 		// Do any additional setup after loading the view, typically from a nib.
 	}
-	
 
 	func setupAuthorization() {
 		let homeViewController = self.parentViewController?.parentViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
-		
+
 		self.session = homeViewController.session
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 		auth!.redirectURL = NSURL(string: "simplyfy://login")
 		auth!.requestedScopes = [SPTAuthStreamingScope]
 		self.fetchPlaylists()
-	//	setupSpotify()
+		// setupSpotify()
 	}
 
-
 	func fetchPlaylists() {
-		
+
 		SPTPlaylistList.playlistsForUserWithSession(session, callback: { (error, playlistList) -> Void in
 			let list = playlistList as! SPTPlaylistList?
 			if list != nil {
@@ -51,7 +48,7 @@ class PlaylistViewController: UITableViewController {
 					self.tableView.reloadData()
 				})
 			}
-			if error != nil{
+			if error != nil {
 				print(error.localizedDescription)
 			}
 		})
@@ -61,10 +58,10 @@ class PlaylistViewController: UITableViewController {
 		UIApplication.sharedApplication().openURL(auth!.loginURL)
 	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "toSong"{
-		   let songSelection = segue.destinationViewController as! SongSelectionViewController
+		if segue.identifier == "toSong" {
+			let songSelection = segue.destinationViewController as! SongSelectionViewController
 			songSelection.partialPlaylist = selectedPlaylist
-			
+			songSelection.title = selectedPlaylist?.name
 		}
 	}
 	func getAllPlaylists(session: SPTSession, playlistList: SPTListPage, callback: (Array<SPTPartialPlaylist> -> Void)) {
@@ -74,7 +71,7 @@ class PlaylistViewController: UITableViewController {
 				if let l = list as? SPTListPage {
 					self.getAllPlaylists(session, playlistList: l, callback: { playlists in
 						var p = playlists
-						for i in 0..<playlistList.items.count {
+						for i in 0 ..< playlistList.items.count {
 							p.append(playlistList.items[i] as! SPTPartialPlaylist)
 						}
 						callback(p)
@@ -83,14 +80,13 @@ class PlaylistViewController: UITableViewController {
 			})
 		} else { // base case, just get all the playlists, then callback so function that called gets all playlists
 			var playlists = Array<SPTPartialPlaylist>()
-			for i in 0..<playlistList.items.count {
+			for i in 0 ..< playlistList.items.count {
 				playlists.append(playlistList.items[i] as! SPTPartialPlaylist)
 			}
 			print(playlists.count)
 			callback(playlists)
 		}
 	}
-	
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		selectedPlaylist = self.playlists![indexPath.row]

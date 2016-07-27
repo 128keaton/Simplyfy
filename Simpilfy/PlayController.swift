@@ -24,7 +24,9 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 	var currentPlaylistURI = NSURL()
 	var newPlaylistURI = NSURL()
 
+	var isPlaying = false
 	var didShuffle = false
+	var currentTrackURI = NSURL()
 
 	func setupAuthorization() {
 		auth = SPTAuth.defaultInstance()
@@ -75,7 +77,21 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 	}
 
 	func getCurrentSong() -> SPTPartialTrack {
+		if didShuffle == true {
+			resortURI()
+			return songs![(uris?.indexOf(currentTrackURI))!]
+		}
 		return songs![currentSong % (songs?.count)!]
+	}
+	func notifyOfNewTrack() {
+		NSNotificationCenter.defaultCenter().postNotificationName("updateTrack", object: self)
+	}
+
+	func resortURI() {
+		uris?.removeAll()
+		for track in songs! {
+			uris?.append(track.uri)
+		}
 	}
 	func playShuffle() {
 		if isInitialized == false {
@@ -93,14 +109,19 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 			uris?.append(track.uri)
 		}
 		uris?.shuffleInPlace()
+		if currentSong >= uris?.count {
+			currentSong = (uris?.indexOf((uris?.last)!))!
+		}
+		currentTrackURI = uris![currentSong]
 
-		self.setLockScreenData()
-		self.setLockScreenPlayed()
-
-		self.setLockScreenData()
-
+		print("current track \(currentSong)")
 		player?.playURIs(uris, fromIndex: Int32(currentSong), callback: nil)
+
+		notifyOfNewTrack()
+		isPlaying = true
 		self.timeIntoSongPaused = self.player!.currentPlaybackPosition
+		self.setLockScreenPlayed()
+		self.setLockScreenData()
 	}
 
 	func setLockScreenPaused() {
@@ -170,7 +191,8 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 		for track in songs! {
 			uris?.append(track.uri)
 		}
-
+		currentTrackURI = uris![currentSong]
+		player?.playURIs(uris, fromIndex: Int32(currentSong), callback: nil)
 		if beenPlaying == true {
 
 			self.setLockScreenData()
@@ -178,7 +200,10 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 
 			self.setLockScreenData()
 		}
-		player?.playURIs(uris, fromIndex: Int32(currentSong), callback: nil)
+
+		notifyOfNewTrack()
+		isPlaying = true
+
 		self.timeIntoSongPaused = self.player!.currentPlaybackPosition
 	}
 	func next() {
@@ -193,12 +218,14 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 		if player?.isPlaying == true {
 			self.timeIntoSongPaused = self.player!.currentPlaybackPosition
 			player?.setIsPlaying(false, callback: nil)
+			isPlaying = false
 			self.setLockScreenPaused()
 		}
 	}
 	func play() {
 		if player?.isPlaying == false {
 			player?.setIsPlaying(true, callback: nil)
+			isPlaying = true
 			self.timeIntoSongPaused = self.player!.currentPlaybackPosition
 			self.setLockScreenPlayed()
 		}

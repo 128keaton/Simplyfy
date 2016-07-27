@@ -11,13 +11,23 @@ import UIKit
 class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 
 	var session: SPTSession?
-	var player: SPTAudioStreamingController? = SPTAudioStreamingController.sharedInstance()
+	var player: PlayController?
 
 	var auth: SPTAuth?
+
+	var currentTrackID: String?
+	var currentTrack: SPTPartialTrack?
+
+	@IBOutlet var artworkView: UIImageView?
+	@IBOutlet var artistLabel: UILabel?
+	@IBOutlet var nameLabel: UILabel?
+	@IBOutlet var playButton: UIButton?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		player = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.initialUpdates), name: "loginSuccessfull", object: nil)
 
 		let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -52,10 +62,37 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 
 		// Do any additional setup after loading the view, typically from a nib.
 	}
-
-	override func viewDidAppear(animated: Bool) {
-		// self.shouldLogin()
+	@IBAction func pausePlay() {
+		if playButton?.titleLabel?.text == "Play" {
+			if player?.isInitialized == true {
+				playButton?.setTitle("Pause", forState: .Normal)
+				player?.play()
+			}
+		} else {
+			playButton?.setTitle("Play", forState: .Normal)
+			player?.pause()
+		}
 	}
+
+	func updateInformation() {
+		if let track = player?.getCurrentSong() {
+
+			currentTrack = track
+			currentTrackID = currentTrack?.identifier
+			let artworkURL = NSData(contentsOfURL: (currentTrack?.album.largestCover.imageURL)!)
+			let artists = currentTrack?.artists[0] as! SPTPartialArtist
+
+			self.artworkView?.image = UIImage(data: artworkURL!)
+			self.artistLabel?.text = "By " + artists.name
+			self.nameLabel?.text = currentTrack?.name
+		}
+	}
+	override func viewDidAppear(animated: Bool) {
+		if player?.isPlaying == true {
+			playButton?.setTitle("Pause", forState: .Normal)
+		}
+	}
+
 	func initialUpdates() {
 		let userDefaults = NSUserDefaults.standardUserDefaults()
 
@@ -71,8 +108,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-	func playNewSong(){
-		
+	func playNewSong() {
 	}
 	func shouldLogin() {
 		print("I be log in")

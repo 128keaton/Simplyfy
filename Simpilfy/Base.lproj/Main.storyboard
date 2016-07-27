@@ -31,7 +31,10 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="88" id="T7P-7Y-m6e"/>
                                 </constraints>
-                                <state key="normal" title="Pause/Play"/>
+                                <state key="normal" title="Play"/>
+                                <connections>
+                                    <action selector="pausePlay" destination="9pv-A4-QxB" eventType="touchUpInside" id="dDR-hT-OJP"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gku-OU-cCo">
                                 <rect key="frame" x="63" y="493" width="34" height="30"/>
@@ -88,6 +91,12 @@
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="5PX-de-wDf"/>
                         <barButtonItem key="rightBarButtonItem" title="Playlist" id="9hc-fo-Rrv"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="artistLabel" destination="RNH-YP-zZk" id="bqq-GA-dry"/>
+                        <outlet property="artworkView" destination="xYa-oF-xwe" id="n4l-q1-oGA"/>
+                        <outlet property="nameLabel" destination="5o9-km-aAG" id="Nr4-t0-eFq"/>
+                        <outlet property="playButton" destination="ZKa-FF-ubm" id="j10-bZ-mls"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>

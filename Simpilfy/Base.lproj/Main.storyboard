@@ -135,7 +135,7 @@
             </objects>
             <point key="canvasLocation" x="1574" y="404"/>
         </scene>
-        <!--Song Selection View Controller-->
+        <!--Playlist-->
         <scene sceneID="zBf-tl-FNf">
             <objects>
                 <tableViewController id="GcR-Sh-bNS" customClass="SongSelectionViewController" customModule="Simpilfy" customModuleProvider="target" sceneMemberID="viewController">
@@ -167,6 +167,16 @@
                             <outlet property="delegate" destination="GcR-Sh-bNS" id="K5F-lz-YZE"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Playlist" id="KDw-9k-aRd">
+                        <barButtonItem key="rightBarButtonItem" title="Shuffle" id="QrT-Mh-Zhl">
+                            <connections>
+                                <action selector="shuffle" destination="GcR-Sh-bNS" id="Xu4-Wh-Pct"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h5F-r0-qcx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

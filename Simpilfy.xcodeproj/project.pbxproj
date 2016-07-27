@@ -22,6 +22,10 @@
 		8A11A6BE1D485C3900D893C2 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6BD1D485C3900D893C2 /* Globals.swift */; };
 		8A11A6C01D48F0C200D893C2 /* SongSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6BF1D48F0C200D893C2 /* SongSelectionViewController.swift */; };
 		8A2AC5001D49057800BC7BCE /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC4FF1D49057800BC7BCE /* PlayController.swift */; };
+		8A2AC5021D49334B00BC7BCE /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A2AC5011D49334B00BC7BCE /* FontAwesome.otf */; };
+		8A2AC5061D49336000BC7BCE /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC5031D49336000BC7BCE /* Enum.swift */; };
+		8A2AC5071D49336000BC7BCE /* FontAwesome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC5041D49336000BC7BCE /* FontAwesome.swift */; };
+		8A2AC5081D49336000BC7BCE /* FontAwesomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC5051D49336000BC7BCE /* FontAwesomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +68,10 @@
 		8A11A6BD1D485C3900D893C2 /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		8A11A6BF1D48F0C200D893C2 /* SongSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSelectionViewController.swift; sourceTree = "<group>"; };
 		8A2AC4FF1D49057800BC7BCE /* PlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayController.swift; sourceTree = "<group>"; };
+		8A2AC5011D49334B00BC7BCE /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
+		8A2AC5031D49336000BC7BCE /* Enum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		8A2AC5041D49336000BC7BCE /* FontAwesome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontAwesome.swift; sourceTree = "<group>"; };
+		8A2AC5051D49336000BC7BCE /* FontAwesomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontAwesomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +125,7 @@
 		8A11A6801D48150A00D893C2 /* Simpilfy */ = {
 			isa = PBXGroup;
 			children = (
+				8A2AC5091D49336300BC7BCE /* Font Awesome */,
 				8A11A6BB1D482B4E00D893C2 /* SpotifyManager.swift */,
 				8A11A6B31D48155500D893C2 /* Fwamewurks */,
 				8A11A6811D48150A00D893C2 /* AppDelegate.swift */,
@@ -160,6 +169,17 @@
 				8A11A6B11D48154F00D893C2 /* Spotify.framework */,
 			);
 			name = Fwamewurks;
+			sourceTree = "<group>";
+		};
+		8A2AC5091D49336300BC7BCE /* Font Awesome */ = {
+			isa = PBXGroup;
+			children = (
+				8A2AC5031D49336000BC7BCE /* Enum.swift */,
+				8A2AC5041D49336000BC7BCE /* FontAwesome.swift */,
+				8A2AC5051D49336000BC7BCE /* FontAwesomeView.swift */,
+				8A2AC5011D49334B00BC7BCE /* FontAwesome.otf */,
+			);
+			name = "Font Awesome";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,6 +288,7 @@
 			files = (
 				8A11A68E1D48150A00D893C2 /* LaunchScreen.storyboard in Resources */,
 				8A11A68B1D48150A00D893C2 /* Assets.xcassets in Resources */,
+				8A2AC5021D49334B00BC7BCE /* FontAwesome.otf in Resources */,
 				8A11A6891D48150A00D893C2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,11 +315,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A11A6C01D48F0C200D893C2 /* SongSelectionViewController.swift in Sources */,
+				8A2AC5081D49336000BC7BCE /* FontAwesomeView.swift in Sources */,
 				8A11A6BC1D482B4E00D893C2 /* SpotifyManager.swift in Sources */,
+				8A2AC5061D49336000BC7BCE /* Enum.swift in Sources */,
 				8A11A6861D48150A00D893C2 /* PlaylistViewController.swift in Sources */,
 				8A2AC5001D49057800BC7BCE /* PlayController.swift in Sources */,
 				8A11A6821D48150A00D893C2 /* AppDelegate.swift in Sources */,
 				8A11A6BE1D485C3900D893C2 /* Globals.swift in Sources */,
+				8A2AC5071D49336000BC7BCE /* FontAwesome.swift in Sources */,
 				8A11A6841D48150A00D893C2 /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

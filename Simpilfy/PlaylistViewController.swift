@@ -27,7 +27,7 @@ class PlaylistViewController: UITableViewController {
 	}
 
 	func setupAuthorization() {
-		let homeViewController = self.parentViewController?.parentViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
+		let homeViewController = self.parentViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
 
 		self.session = homeViewController.session
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
@@ -59,7 +59,7 @@ class PlaylistViewController: UITableViewController {
 	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "toSong" {
-			let songSelection = segue.destinationViewController as! SongSelectionViewController
+			let songSelection = segue.destinationViewController.childViewControllers[0] as! SongSelectionViewController
 			songSelection.partialPlaylist = selectedPlaylist
 			songSelection.title = selectedPlaylist?.name
 		}
@@ -106,7 +106,7 @@ class PlaylistViewController: UITableViewController {
 		let playlist: SPTPartialPlaylist! = playlists![indexPath.row]
 
 		if playlist != nil {
-			cell!.textLabel?.text = playlist.name
+			cell!.textLabel?.text = playlist.name.uppercaseString
 			cell!.detailTextLabel?.text = String(playlist.trackCount)
 		}
 
@@ -117,4 +117,3 @@ class PlaylistViewController: UITableViewController {
 		// Dispose of any resources that can be recreated.
 	}
 }
-

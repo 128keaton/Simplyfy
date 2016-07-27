@@ -207,12 +207,16 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 		self.timeIntoSongPaused = self.player!.currentPlaybackPosition
 	}
 	func next() {
-		currentSong = currentSong + 1
+		if currentSong + 1 < (uris?.count)! {
+			currentSong = currentSong + 1
+		}
 		beginPlaying(true)
 	}
 	func previous() {
-		currentSong = currentSong - 1
-		beginPlaying(true)
+		if currentSong - 1 > -1 {
+			currentSong = currentSong - 1
+			beginPlaying(true)
+		}
 	}
 	func pause() {
 		if player?.isPlaying == true {

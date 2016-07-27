@@ -25,7 +25,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
+		self.view.bringSubviewToFront(artworkView!)
 		player = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.initialUpdates), name: "loginSuccessfull", object: nil)
@@ -62,18 +62,46 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 
 		// Do any additional setup after loading the view, typically from a nib.
 	}
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "toSong" {
+			let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
+			let songSelection = segue.destinationViewController.childViewControllers[0] as! SongSelectionViewController
+			songSelection.partialPlaylist = currentPlaylist
+			songSelection.fromHome = true
+			songSelection.title = currentPlaylist?.name
+		}
+	}
+
+	override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+		let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
+		if currentPlaylist != nil {
+			return true
+		}
+		return false
+	}
+
 	@IBAction func pausePlay() {
-		if playButton?.titleLabel?.text == "Play" {
+		if playButton?.titleLabel?.text == "PLAY" {
 			if player?.isInitialized == true {
-				playButton?.setTitle("Pause", forState: .Normal)
+				playButton?.setTitle("PAUSE", forState: .Normal)
 				player?.play()
 			}
 		} else {
-			playButton?.setTitle("Play", forState: .Normal)
+			playButton?.setTitle("PLAY", forState: .Normal)
 			player?.pause()
 		}
 	}
 
+	@IBAction func next() {
+		if player?.isInitialized == true {
+			player?.next()
+		}
+	}
+	@IBAction func previous() {
+		if player?.isInitialized == true {
+			player?.previous()
+		}
+	}
 	func updateInformation() {
 		if let track = player?.getCurrentSong() {
 
@@ -82,6 +110,8 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 			let artworkURL = NSData(contentsOfURL: (currentTrack?.album.largestCover.imageURL)!)
 			let artists = currentTrack?.artists[0] as! SPTPartialArtist
 
+			self.artistLabel?.hidden = false
+			self.nameLabel?.hidden = false
 			self.artworkView?.image = UIImage(data: artworkURL!)
 			self.artistLabel?.text = "By " + artists.name
 			self.nameLabel?.text = currentTrack?.name
@@ -89,7 +119,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 	}
 	override func viewDidAppear(animated: Bool) {
 		if player?.isPlaying == true {
-			playButton?.setTitle("Pause", forState: .Normal)
+			playButton?.setTitle("PAUSE", forState: .Normal)
 		}
 	}
 

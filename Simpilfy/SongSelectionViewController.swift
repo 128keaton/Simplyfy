@@ -18,6 +18,10 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	var allTracks: [SPTPartialTrack]? = []
 	var playerIntitalized = false
 	var manager: PlayController?
+	var homeViewController: HomeViewController?
+	var previousIndexPath: NSIndexPath?
+
+	var fromHome = false
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -27,9 +31,9 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	}
 
 	func setupAuthorization() {
-		let homeViewController = self.parentViewController?.parentViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
+		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0].childViewControllers[0] as? HomeViewController
 
-		self.session = homeViewController.session
+		self.session = homeViewController!.session
 
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 		auth!.redirectURL = NSURL(string: "simplyfy://login")
@@ -54,6 +58,15 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 					})
 				}
 			})
+		}
+	}
+	override func viewDidAppear(animated: Bool) {
+		if manager?.isPlaying == true {
+			if let song = manager?.getCurrentSong() {
+				let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song))!, inSection: 0)
+
+				self.tableView.scrollToRowAtIndexPath(shufflePath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
+			}
 		}
 	}
 
@@ -92,21 +105,38 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 		}
 	}
 	@IBAction func shuffle() {
+
 		if playerIntitalized == false {
 			playerIntitalized = true
 			manager?.newPlaylistURI = partialPlaylist.uri
 			manager?.songs = allTracks
 			manager?.currentSong = randomInt(0, max: (allTracks?.count)!)
-			manager?.playShuffle()
 		} else {
 			manager?.newPlaylistURI = partialPlaylist.uri
 			manager?.songs = allTracks
 			manager?.currentSong = randomInt(0, max: (allTracks?.count)!)
-			manager?.playShuffle()
 		}
+
+		self.tableView.beginUpdates()
+		manager?.pause()
+		manager?.playShuffle()
+		let song = manager?.getCurrentSong()
+		let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song!))!, inSection: 0)
+
+		if previousIndexPath != nil {
+
+			self.tableView.reloadRowsAtIndexPaths([shufflePath, previousIndexPath!], withRowAnimation: .Automatic)
+		} else {
+			self.tableView.reloadRowsAtIndexPaths([shufflePath], withRowAnimation: .Automatic)
+		}
+		previousIndexPath = shufflePath
+		self.tableView.endUpdates()
 	}
 	func randomInt(min: Int, max: Int) -> Int {
 		return min + Int(arc4random_uniform(UInt32(max - min + 1)))
+	}
+	@IBAction func close() {
+		self.dismissViewControllerAnimated(true, completion: nil)
 	}
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -125,6 +155,20 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 			manager?.currentSong = indexPath.row
 			manager?.beginPlaying(true)
 		}
+		let song = manager?.getCurrentSong()
+		let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song!))!, inSection: 0)
+
+		self.tableView.beginUpdates()
+		if previousIndexPath != nil {
+			self.tableView.reloadRowsAtIndexPaths([shufflePath, previousIndexPath!], withRowAnimation: .Automatic)
+		} else if fromHome == true {
+			self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+		} else {
+			self.tableView.reloadRowsAtIndexPaths([shufflePath], withRowAnimation: .Automatic)
+		}
+		print("Parent VC: \(self.parentViewController). Parent parent: \(self.parentViewController?.parentViewController)")
+		previousIndexPath = shufflePath
+		self.tableView.endUpdates()
 	}
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("Track", forIndexPath: indexPath)
@@ -132,9 +176,39 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 		if self.playlist != nil {
 
 			let track = allTracks![indexPath.row]
-			cell.textLabel!.text = track.name
+			if track.name.characters.count > 30 {
+				let name = track.name
+				cell.textLabel?.text = name.trunc(30)
+			} else {
+				cell.textLabel!.text = track.name
+			}
+
+			if track.artists[0].name.characters.count > 20 {
+				cell.detailTextLabel?.text = track.artists[0].name.trunc(20)
+			} else {
+				cell.detailTextLabel!.text = track.artists[0].name
+			}
+			cell.detailTextLabel?.font = UIFont.systemFontOfSize(14)
+			cell.detailTextLabel?.textColor = UIColor.grayColor()
+			if manager?.isPlaying == true {
+				if track.name == manager?.getCurrentSong().name {
+					cell.detailTextLabel?.textColor = UIColor.whiteColor()
+					cell.detailTextLabel?.font = UIFont.fontAwesomeOfSize(20)
+					cell.detailTextLabel?.text = String.fontAwesomeIconWithName(FontAwesome.Play)
+				}
+			}
 		}
 
 		return cell
+	}
+}
+
+extension String {
+	func trunc(length: Int, trailing: String? = "...") -> String {
+		if self.characters.count > length {
+			return self.substringToIndex(self.startIndex.advancedBy(length)) + (trailing ?? "")
+		} else {
+			return self
+		}
 	}
 }

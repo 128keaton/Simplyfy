@@ -72,7 +72,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cassette" translatesAutoresizingMaskIntoConstraints="NO" id="J0A-Lr-fsW">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="J0A-Lr-fsW">
                                 <rect key="frame" x="180" y="158" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="J0A-Lr-fsW" secondAttribute="height" multiplier="1:1" id="73e-d0-raa"/>
@@ -194,7 +194,7 @@
                             <outlet property="delegate" destination="k3z-rd-3Pi" id="Q4I-PO-Pab"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Playlists" id="AOV-if-RCS"/>
+                    <tabBarItem key="tabBarItem" title="Playlists" image="list" id="AOV-if-RCS"/>
                     <navigationItem key="navigationItem" title="Tapes" id="2ym-KW-YXm"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -293,7 +293,7 @@
         <scene sceneID="1fy-SS-3vE">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5lC-Li-LfK" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Playing" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Playing" image="home" id="acW-dT-cKf"/>
                     <toolbarItems/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZSK-cd-LnK">
@@ -338,10 +338,11 @@
     </scenes>
     <resources>
         <image name="ButtonHorizontal" width="10" height="400"/>
-        <image name="Cassette" width="200" height="200"/>
-        <image name="first" width="30" height="30"/>
+        <image name="Logo" width="1024" height="1024"/>
+        <image name="home" width="30" height="30"/>
+        <image name="list" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="bAE-7B-p4M"/>
+        <segue reference="XVt-5L-Wd4"/>
     </inferredMetricsTieBreakers>
 </document>

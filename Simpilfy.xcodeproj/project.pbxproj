@@ -8,13 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		8A11A6821D48150A00D893C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6811D48150A00D893C2 /* AppDelegate.swift */; };
-		8A11A6841D48150A00D893C2 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6831D48150A00D893C2 /* FirstViewController.swift */; };
-		8A11A6861D48150A00D893C2 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6851D48150A00D893C2 /* SecondViewController.swift */; };
+		8A11A6841D48150A00D893C2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6831D48150A00D893C2 /* HomeViewController.swift */; };
+		8A11A6861D48150A00D893C2 /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6851D48150A00D893C2 /* PlaylistViewController.swift */; };
 		8A11A6891D48150A00D893C2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A11A6871D48150A00D893C2 /* Main.storyboard */; };
 		8A11A68B1D48150A00D893C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A11A68A1D48150A00D893C2 /* Assets.xcassets */; };
 		8A11A68E1D48150A00D893C2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A11A68C1D48150A00D893C2 /* LaunchScreen.storyboard */; };
 		8A11A6991D48150A00D893C2 /* SimpilfyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6981D48150A00D893C2 /* SimpilfyTests.swift */; };
 		8A11A6A41D48150A00D893C2 /* SimpilfyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6A31D48150A00D893C2 /* SimpilfyUITests.swift */; };
+		8A11A6B21D48154F00D893C2 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A11A6B11D48154F00D893C2 /* Spotify.framework */; };
+		8A11A6B51D4815C400D893C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A11A6B41D4815C400D893C2 /* AVFoundation.framework */; };
+		8A11A6B71D4815C800D893C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A11A6B61D4815C800D893C2 /* SystemConfiguration.framework */; };
+		8A11A6BC1D482B4E00D893C2 /* SpotifyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6BB1D482B4E00D893C2 /* SpotifyManager.swift */; };
+		8A11A6BE1D485C3900D893C2 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6BD1D485C3900D893C2 /* Globals.swift */; };
+		8A11A6C01D48F0C200D893C2 /* SongSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A11A6BF1D48F0C200D893C2 /* SongSelectionViewController.swift */; };
+		8A2AC5001D49057800BC7BCE /* PlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC4FF1D49057800BC7BCE /* PlayController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,8 +44,8 @@
 /* Begin PBXFileReference section */
 		8A11A67E1D48150A00D893C2 /* Simpilfy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simpilfy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A11A6811D48150A00D893C2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8A11A6831D48150A00D893C2 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		8A11A6851D48150A00D893C2 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		8A11A6831D48150A00D893C2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		8A11A6851D48150A00D893C2 /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		8A11A6881D48150A00D893C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8A11A68A1D48150A00D893C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8A11A68D1D48150A00D893C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +56,14 @@
 		8A11A69F1D48150A00D893C2 /* SimpilfyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpilfyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A11A6A31D48150A00D893C2 /* SimpilfyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpilfyUITests.swift; sourceTree = "<group>"; };
 		8A11A6A51D48150A00D893C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A11A6B11D48154F00D893C2 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
+		8A11A6B41D4815C400D893C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		8A11A6B61D4815C800D893C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8A11A6B81D48164C00D893C2 /* Simpilfy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Simpilfy-Bridging-Header.h"; sourceTree = "<group>"; };
+		8A11A6BB1D482B4E00D893C2 /* SpotifyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpotifyManager.swift; path = ../SpotifyManager.swift; sourceTree = "<group>"; };
+		8A11A6BD1D485C3900D893C2 /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
+		8A11A6BF1D48F0C200D893C2 /* SongSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSelectionViewController.swift; sourceTree = "<group>"; };
+		8A2AC4FF1D49057800BC7BCE /* PlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +71,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A11A6B71D4815C800D893C2 /* SystemConfiguration.framework in Frameworks */,
+				8A11A6B51D4815C400D893C2 /* AVFoundation.framework in Frameworks */,
+				8A11A6B21D48154F00D893C2 /* Spotify.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,13 +117,19 @@
 		8A11A6801D48150A00D893C2 /* Simpilfy */ = {
 			isa = PBXGroup;
 			children = (
+				8A11A6BB1D482B4E00D893C2 /* SpotifyManager.swift */,
+				8A11A6B31D48155500D893C2 /* Fwamewurks */,
 				8A11A6811D48150A00D893C2 /* AppDelegate.swift */,
-				8A11A6831D48150A00D893C2 /* FirstViewController.swift */,
-				8A11A6851D48150A00D893C2 /* SecondViewController.swift */,
+				8A11A6831D48150A00D893C2 /* HomeViewController.swift */,
+				8A2AC4FF1D49057800BC7BCE /* PlayController.swift */,
+				8A11A6BD1D485C3900D893C2 /* Globals.swift */,
+				8A11A6851D48150A00D893C2 /* PlaylistViewController.swift */,
 				8A11A6871D48150A00D893C2 /* Main.storyboard */,
+				8A11A6BF1D48F0C200D893C2 /* SongSelectionViewController.swift */,
 				8A11A68A1D48150A00D893C2 /* Assets.xcassets */,
 				8A11A68C1D48150A00D893C2 /* LaunchScreen.storyboard */,
 				8A11A68F1D48150A00D893C2 /* Info.plist */,
+				8A11A6B81D48164C00D893C2 /* Simpilfy-Bridging-Header.h */,
 			);
 			path = Simpilfy;
 			sourceTree = "<group>";
@@ -126,6 +150,16 @@
 				8A11A6A51D48150A00D893C2 /* Info.plist */,
 			);
 			path = SimpilfyUITests;
+			sourceTree = "<group>";
+		};
+		8A11A6B31D48155500D893C2 /* Fwamewurks */ = {
+			isa = PBXGroup;
+			children = (
+				8A11A6B61D4815C800D893C2 /* SystemConfiguration.framework */,
+				8A11A6B41D4815C400D893C2 /* AVFoundation.framework */,
+				8A11A6B11D48154F00D893C2 /* Spotify.framework */,
+			);
+			name = Fwamewurks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,9 +293,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A11A6861D48150A00D893C2 /* SecondViewController.swift in Sources */,
+				8A11A6C01D48F0C200D893C2 /* SongSelectionViewController.swift in Sources */,
+				8A11A6BC1D482B4E00D893C2 /* SpotifyManager.swift in Sources */,
+				8A11A6861D48150A00D893C2 /* PlaylistViewController.swift in Sources */,
+				8A2AC5001D49057800BC7BCE /* PlayController.swift in Sources */,
 				8A11A6821D48150A00D893C2 /* AppDelegate.swift in Sources */,
-				8A11A6841D48150A00D893C2 /* FirstViewController.swift in Sources */,
+				8A11A6BE1D485C3900D893C2 /* Globals.swift in Sources */,
+				8A11A6841D48150A00D893C2 /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,10 +443,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Simpilfy",
+				);
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				INFOPLIST_FILE = Simpilfy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bittank.Simpilfy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simpilfy/Simpilfy-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -416,10 +463,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Simpilfy",
+				);
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				INFOPLIST_FILE = Simpilfy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bittank.Simpilfy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simpilfy/Simpilfy-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -488,6 +543,7 @@
 				8A11A6AA1D48150A00D893C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8A11A6AB1D48150A00D893C2 /* Build configuration list for PBXNativeTarget "SimpilfyTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +552,7 @@
 				8A11A6AD1D48150A00D893C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8A11A6AE1D48150A00D893C2 /* Build configuration list for PBXNativeTarget "SimpilfyUITests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +561,7 @@
 				8A11A6B01D48150A00D893C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

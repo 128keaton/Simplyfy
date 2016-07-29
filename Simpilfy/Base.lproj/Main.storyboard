@@ -72,7 +72,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="J0A-Lr-fsW">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Record" translatesAutoresizingMaskIntoConstraints="NO" id="J0A-Lr-fsW">
                                 <rect key="frame" x="180" y="158" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="J0A-Lr-fsW" secondAttribute="height" multiplier="1:1" id="73e-d0-raa"/>
@@ -145,12 +145,76 @@
                         <outlet property="artistLabel" destination="6rI-Hm-Pzc" id="gZl-gw-mun"/>
                         <outlet property="artworkView" destination="J0A-Lr-fsW" id="Uun-fH-A0j"/>
                         <outlet property="nameLabel" destination="V8n-k0-fUt" id="haD-lz-huE"/>
+                        <outlet property="nextButton" destination="YXa-bS-4pR" id="ItO-CV-04g"/>
                         <outlet property="playButton" destination="ZKa-FF-ubm" id="j10-bZ-mls"/>
+                        <outlet property="previousButton" destination="Gku-OU-cCo" id="TWT-Sc-MNK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1562" y="-320"/>
+        </scene>
+        <!--Album Selection Controller-->
+        <scene sceneID="z1t-1n-2nC">
+            <objects>
+                <collectionViewController id="njb-33-H1S" customClass="AlbumSelectionController" customModule="Simpilfy" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="67w-aj-PIp">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="uzX-rZ-6n5">
+                            <size key="itemSize" width="106" height="106"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Album" id="6HV-55-Qoj" customClass="AlbumCell" customModule="Simpilfy" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="64" width="106" height="106"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="106" height="106"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ue4-Mn-Tpx">
+                                            <rect key="frame" x="0.0" y="0.0" width="106" height="106"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="ue4-Mn-Tpx" firstAttribute="top" secondItem="6HV-55-Qoj" secondAttribute="top" id="4MH-eH-pUX"/>
+                                    <constraint firstItem="ue4-Mn-Tpx" firstAttribute="leading" secondItem="6HV-55-Qoj" secondAttribute="leading" id="8dD-QG-PKA"/>
+                                    <constraint firstItem="ue4-Mn-Tpx" firstAttribute="centerY" secondItem="6HV-55-Qoj" secondAttribute="centerY" id="FmD-y2-NWN"/>
+                                    <constraint firstItem="ue4-Mn-Tpx" firstAttribute="centerX" secondItem="6HV-55-Qoj" secondAttribute="centerX" id="qyc-B1-wfy"/>
+                                </constraints>
+                                <size key="customSize" width="106" height="106"/>
+                                <connections>
+                                    <outlet property="albumImage" destination="ue4-Mn-Tpx" id="Qqg-tO-mUQ"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="njb-33-H1S" id="ILO-g2-GD8"/>
+                            <outlet property="delegate" destination="njb-33-H1S" id="hfI-Ex-3j4"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="9QX-ap-3bH">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="4NQ-4E-rkd">
+                            <connections>
+                                <action selector="close" destination="njb-33-H1S" id="IT5-AG-cms"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Shoofle" id="QYW-qt-85g">
+                            <connections>
+                                <action selector="shuffle" destination="njb-33-H1S" id="9Sp-nt-Q62"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DfC-iJ-C8R" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1562" y="1224"/>
         </scene>
         <!--Tapes-->
         <scene sceneID="eOj-vj-ZiW">
@@ -199,6 +263,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="ebe-Lm-mF2" kind="show" identifier="toSong" id="XVt-5L-Wd4"/>
+                        <segue destination="AWI-ip-6Ai" kind="show" identifier="toAlbum" id="qnC-JH-f7f"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dzx-a2-IL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -335,10 +400,28 @@
             </objects>
             <point key="canvasLocation" x="1562" y="436"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="3m6-5o-WnO">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="AWI-ip-6Ai" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="U9s-BS-6bo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="njb-33-H1S" kind="relationship" relationship="rootViewController" id="4JY-Cr-T2o"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rQm-7h-Uep" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="750" y="1224"/>
+        </scene>
     </scenes>
     <resources>
         <image name="ButtonHorizontal" width="10" height="400"/>
-        <image name="Logo" width="1024" height="1024"/>
+        <image name="Record" width="1278" height="1280"/>
         <image name="home" width="30" height="30"/>
         <image name="list" width="30" height="30"/>
     </resources>

@@ -21,10 +21,15 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 	@IBOutlet var artworkView: UIImageView?
 	@IBOutlet var artistLabel: UILabel?
 	@IBOutlet var nameLabel: UILabel?
+	// Buttons
 	@IBOutlet var playButton: UIButton?
+	@IBOutlet var previousButton: UIButton?
+	@IBOutlet var nextButton: UIButton?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		setupButtons()
+
 		self.view.bringSubviewToFront(artworkView!)
 		player = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
@@ -62,6 +67,14 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 
 		// Do any additional setup after loading the view, typically from a nib.
 	}
+	func setupButtons() {
+		playButton?.titleLabel?.font = UIFont.fontAwesomeOfSize(30)
+		playButton?.setTitle(String.fontAwesomeIconWithName(.Play), forState: .Normal)
+		previousButton?.titleLabel?.font = UIFont.fontAwesomeOfSize(30)
+		previousButton?.setTitle(String.fontAwesomeIconWithName(.Backward), forState: .Normal)
+		nextButton?.titleLabel?.font = UIFont.fontAwesomeOfSize(30)
+		nextButton?.setTitle(String.fontAwesomeIconWithName(.Forward), forState: .Normal)
+	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "toSong" {
 			let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
@@ -81,13 +94,13 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 	}
 
 	@IBAction func pausePlay() {
-		if playButton?.titleLabel?.text == "PLAY" {
+		if playButton?.titleLabel?.text == String.fontAwesomeIconWithName(.Play) {
 			if player?.isInitialized == true {
-				playButton?.setTitle("PAUSE", forState: .Normal)
+				playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
 				player?.play()
 			}
 		} else {
-			playButton?.setTitle("PLAY", forState: .Normal)
+			playButton?.setTitle(String.fontAwesomeIconWithName(.Play), forState: .Normal)
 			player?.pause()
 		}
 	}
@@ -119,7 +132,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 	}
 	override func viewDidAppear(animated: Bool) {
 		if player?.isPlaying == true {
-			playButton?.setTitle("PAUSE", forState: .Normal)
+			playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
 		}
 	}
 

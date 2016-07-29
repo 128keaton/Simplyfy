@@ -135,6 +135,14 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 			manager?.beginPlaying(true)
 			manager?.play()
 		}
+		if previousIndexPath != nil {
+			let previousCell = self.collectionView?.cellForItemAtIndexPath(previousIndexPath!) as! AlbumCell
+			previousCell.tapped()
+		}
+		previousIndexPath = indexPath
+
+		let cell = self.collectionView?.cellForItemAtIndexPath(indexPath) as! AlbumCell
+		cell.tapped()
 	}
 
 	override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -147,30 +155,8 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		let track = allTracks![indexPath.row]
 		let albumArtworkURL = track.album.covers[1].imageURL
 
-		// var request = ImageRequest(URL: albumArtworkURL)
-		// request.targetSize = CGSize(width: 200, height: 200) // Resize image
-
 		cell.albumImage?.kf_setImageWithURL(albumArtworkURL)
 
-		// cell.backgroundColor = UIColor.blackColor()
-		/*var imageData: NSData?
-		 let track = allTracks![indexPath.row]
-		 let albumArtworkURL = track.album.covers[1].imageURL
-
-		 imageData = NSData(contentsOfURL: albumArtworkURL)
-
-		 let albumArtwork = UIImage(data: imageData!)
-
-		 UIGraphicsBeginImageContext(CGSizeMake(1, 1))
-		 let context = UIGraphicsGetCurrentContext()
-		 CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), albumArtwork?.CGImage)
-		 UIGraphicsEndImageContext()
-
-		 dispatch_async(dispatch_get_main_queue(), {
-		 cell.albumImage?.image = albumArtwork
-		 })*/
-
-		// Configure the cell
 		return cell
 	}
 }

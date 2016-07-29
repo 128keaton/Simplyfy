@@ -133,6 +133,7 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 			manager?.songs = allTracks
 			manager?.currentSong = indexPath.row
 			manager?.beginPlaying(true)
+			manager?.play()
 		}
 	}
 

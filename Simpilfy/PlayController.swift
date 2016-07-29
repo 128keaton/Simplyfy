@@ -166,7 +166,9 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 								dict = [String: AnyObject]()
 							}
 							var info = dict!
+							let art: UIImage? = UIImage(data: NSData(contentsOfURL: track.album.covers[1].imageURL)!)
 
+							info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: art!)
 							info[MPMediaItemPropertyTitle] = track.name
 							info[MPMediaItemPropertyPlaybackDuration] = track.duration
 							info[MPMediaItemPropertyArtist] = artist.name

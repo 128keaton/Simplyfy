@@ -153,9 +153,9 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Album", forIndexPath: indexPath) as! AlbumCell
 
 		let track = allTracks![indexPath.row]
-		let albumArtworkURL = track.album.covers[1].imageURL
-
-		cell.albumImage?.kf_setImageWithURL(albumArtworkURL)
+		let albumArtworkURL = track.album.largestCover.imageURL
+		cell.front.kf_setImageWithURL(albumArtworkURL)
+		cell.albumArtwork? = albumArtworkURL
 
 		return cell
 	}

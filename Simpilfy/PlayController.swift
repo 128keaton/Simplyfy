@@ -33,7 +33,7 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 		auth!.redirectURL = NSURL(string: "simplyfy://login")
 		auth!.requestedScopes = [SPTAuthStreamingScope]
-		let rootViewController = UIApplication.sharedApplication().delegate!.window?!.rootViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
+		let rootViewController = UIApplication.sharedApplication().delegate!.window?!.rootViewController?.childViewControllers[0] as! HomeViewController
 		self.session = rootViewController.session
 	}
 
@@ -149,6 +149,13 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 
 		MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = info
 	}
+	func getAlbumArt(track: SPTPartialTrack) -> NSURL {
+
+		guard let albumArtworkURL = track.album.largestCover else {
+			return NSURL(string: "http://pixel.nymag.com/imgs/daily/vulture/2015/06/26/26-spotify.w529.h529.jpg")!
+		}
+		return albumArtworkURL.imageURL
+	}
 
 	func setLockScreenData() {
 		let track = self.getCurrentSong()
@@ -166,7 +173,7 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 								dict = [String: AnyObject]()
 							}
 							var info = dict!
-							let art: UIImage? = UIImage(data: NSData(contentsOfURL: track.album.covers[1].imageURL)!)
+							let art: UIImage? = UIImage(data: NSData(contentsOfURL: self.getAlbumArt(track))!)
 
 							info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: art!)
 							info[MPMediaItemPropertyTitle] = track.name
@@ -188,6 +195,7 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 
 		if newPlaylistURI != currentPlaylistURI || didShuffle == true {
 			uris?.removeAll()
+			player?.shuffle = false
 		}
 		currentPlaylistURI = newPlaylistURI
 		for track in songs! {

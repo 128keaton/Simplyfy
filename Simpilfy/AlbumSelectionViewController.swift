@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Kingfisher
 import KTCenterFlowLayout
+import MBProgressHUD
+
 class AlbumSelectionController: UICollectionViewController, SessionManagerDelegate {
 	var playlist: SPTPlaylistSnapshot!
 	var session: SPTSession!
@@ -39,9 +41,19 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		manager = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
 	}
 
-	func setupAuthorization() {
-		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0].childViewControllers[0] as? HomeViewController
+	override func canBecomeFirstResponder() -> Bool {
+		return true
+	}
 
+	override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
+		if motion == .MotionShake {
+
+			self.shuffle()
+		}
+	}
+	func setupAuthorization() {
+		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0] as? HomeViewController
+		MBProgressHUD.showHUDAddedTo(self.view, animated: true)
 		self.session = homeViewController!.session
 		sessionManager?.getSession()
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
@@ -50,20 +62,38 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 
 		self.getPlaylistSnapshot()
 	}
-	@IBAction func shuffle() {
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "toSong" {
+			let songSelection = segue.destinationViewController.childViewControllers[0] as! SongSelectionViewController
+			songSelection.partialPlaylist = self.partialPlaylist
+			songSelection.title = self.partialPlaylist.name
+		}
+	}
+
+	func shuffle() {
 
 		if playerIntitalized == false {
 			playerIntitalized = true
 			manager?.newPlaylistURI = partialPlaylist.uri
-			manager?.songs = allTracks
-			manager?.currentSong = randomInt(0, max: (allTracks?.count)!)
+			manager?.songs = allTracks!.shuffle()
 		} else {
 			manager?.newPlaylistURI = partialPlaylist.uri
-			manager?.songs = allTracks
-			manager?.currentSong = randomInt(0, max: (allTracks?.count)!)
+			manager?.songs = allTracks!.shuffle()
 		}
 
 		manager?.playShuffle()
+		let track = manager?.getCurrentSong()
+		addHudToView((track?.name)!, artist: ((track?.artists[0] as! SPTPartialArtist).name)!)
+	}
+	func addHudToView(song: String, artist: String) {
+		let hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+		hud.mode = .Text
+		hud.label.text = "Playing: " + song
+		hud.detailsLabel.text = "By: " + artist
+		self.performSelector(#selector(AlbumSelectionController.hideHud), withObject: nil, afterDelay: 1.0)
+	}
+	func hideHud() {
+		MBProgressHUD.hideHUDForView(self.view, animated: true)
 	}
 	func randomInt(min: Int, max: Int) -> Int {
 		return min + Int(arc4random_uniform(UInt32(max - min + 1)))
@@ -87,6 +117,7 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 							self.allTracks?.append(track)
 						}
 						self.collectionView?.reloadData()
+						MBProgressHUD.hideHUDForView(self.view, animated: true)
 					})
 				}
 			})
@@ -149,14 +180,29 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		return (allTracks!.count)
 	}
 
+	func getAlbumArt(track: SPTPartialTrack) -> NSURL {
+
+		guard let albumArtworkURL = track.album.largestCover else {
+			return NSURL(string: "http://pixel.nymag.com/imgs/daily/vulture/2015/06/26/26-spotify.w529.h529.jpg")!
+		}
+		return albumArtworkURL.imageURL
+	}
 	override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Album", forIndexPath: indexPath) as! AlbumCell
 
 		let track = allTracks![indexPath.row]
-		let albumArtworkURL = track.album.largestCover.imageURL
-		cell.front.kf_setImageWithURL(albumArtworkURL)
-		cell.albumArtwork? = albumArtworkURL
+
+		cell.front.kf_setImageWithURL(getAlbumArt(track))
 
 		return cell
+	}
+}
+
+extension Array {
+	mutating func shuffle() {
+		for i in 0 ..< (count - 1) {
+			let j = Int(arc4random_uniform(UInt32(count - i))) + i
+			swap(&self[i], &self[j])
+		}
 	}
 }

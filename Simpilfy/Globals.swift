@@ -9,3 +9,5 @@
 import Foundation
 let clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 let callbackURL = "simplyfy://login"
+let kTokenSwapURL = "https://aqueous-oasis-74938.herokuapp.com/swap"
+let kTokenRefreshServiceURL = "https://aqueous-oasis-74938.herokuapp.com/refresh"

@@ -31,7 +31,7 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	}
 
 	func setupAuthorization() {
-		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0].childViewControllers[0] as? HomeViewController
+		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0] as? HomeViewController
 
 		self.session = homeViewController!.session
 
@@ -58,15 +58,6 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 					})
 				}
 			})
-		}
-	}
-	override func viewDidAppear(animated: Bool) {
-		if manager?.isPlaying == true {
-			if let song = manager?.getCurrentSong() {
-				let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song))!, inSection: 0)
-
-				self.tableView.scrollToRowAtIndexPath(shufflePath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
-			}
 		}
 	}
 

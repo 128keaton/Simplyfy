@@ -7,13 +7,14 @@
 //
 
 import UIKit
-
-class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
+import Kingfisher
+import UIImageColors
+class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionManagerDelegate {
 
 	var session: SPTSession?
 	var player: PlayController?
 
-	var auth: SPTAuth?
+	var manager: SessionManager?
 
 	var currentTrackID: String?
 	var currentTrack: SPTPartialTrack?
@@ -29,41 +30,12 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupButtons()
-
+		manager = SessionManager()
+		manager?.delegate = self
+		manager?.getSession()
 		self.view.bringSubviewToFront(artworkView!)
 		player = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.initialUpdates), name: "loginSuccessfull", object: nil)
-
-		let userDefaults = NSUserDefaults.standardUserDefaults()
-
-		if let sessionObj: AnyObject = userDefaults.objectForKey("SpotifySession") { // session available
-			let sessionDataObj = sessionObj as! NSData
-
-			let session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionDataObj) as! SPTSession
-
-			if !session.isValid() && auth != nil {
-				auth!.renewSession(session, callback: { (error: NSError!, renewdSession: SPTSession!) -> Void in
-					if error == nil {
-						let sessionData = NSKeyedArchiver.archivedDataWithRootObject(session)
-						userDefaults.setObject(sessionData, forKey: "SpotifySession")
-						userDefaults.synchronize()
-						print("new session")
-						self.session = renewdSession
-						self.didLogin(renewdSession)
-					} else {
-						print("error refreshing session")
-					}
-				})
-			} else {
-				print("session valid")
-				self.session = session
-				didLogin(session)
-			}
-		} else {
-			// UI updates
-			self.performSelector(#selector(HomeViewController.shouldLogin), withObject: nil, afterDelay: 0.2)
-		}
 
 		// Do any additional setup after loading the view, typically from a nib.
 	}
@@ -74,6 +46,9 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 		previousButton?.setTitle(String.fontAwesomeIconWithName(.Backward), forState: .Normal)
 		nextButton?.titleLabel?.font = UIFont.fontAwesomeOfSize(30)
 		nextButton?.setTitle(String.fontAwesomeIconWithName(.Forward), forState: .Normal)
+		playButton?.layer.borderColor = UIColor.whiteColor().CGColor
+		playButton?.layer.borderWidth = 2.0
+		playButton?.layer.cornerRadius = 10
 	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "toSong" {
@@ -84,7 +59,9 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 			songSelection.title = currentPlaylist?.name
 		}
 	}
-
+	func doSomethingWithSession(session: SPTSession) {
+		self.session = session
+	}
 	override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
 		let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
 		if currentPlaylist != nil {
@@ -115,19 +92,44 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 			player?.previous()
 		}
 	}
+	func getAlbumArt(track: SPTPartialTrack) -> NSURL {
+
+		guard let albumArtworkURL = track.album.largestCover else {
+			return NSURL(string: "http://pixel.nymag.com/imgs/daily/vulture/2015/06/26/26-spotify.w529.h529.jpg")!
+		}
+		return albumArtworkURL.imageURL
+	}
+
 	func updateInformation() {
 		if let track = player?.getCurrentSong() {
 
 			currentTrack = track
-			currentTrackID = currentTrack?.identifier
-			let artworkURL = NSData(contentsOfURL: (currentTrack?.album.largestCover.imageURL)!)
 			let artists = currentTrack?.artists[0] as! SPTPartialArtist
+
+			UIImage(data: NSData(contentsOfURL: self.getAlbumArt(track))!)!.getColors({ (let colors: UIImageColors?) in
+				UIView.animateWithDuration(0.4, delay: 0, options: UIViewAnimationOptions.AllowUserInteraction, animations: { () -> Void in
+
+					self.view.backgroundColor = colors?.backgroundColor
+
+					self.artistLabel?.pushTransition(0.4)
+					self.artistLabel?.text = "By " + artists.name
+					self.artistLabel?.textColor = colors?.secondaryColor
+					self.nameLabel?.pushTransition(0.4)
+					self.nameLabel?.text = (self.currentTrack?.name)! + " "
+					self.nameLabel?.textColor = colors?.primaryColor
+					self.nextButton?.titleLabel?.textColor = colors?.primaryColor
+					self.playButton?.titleLabel?.textColor = colors?.primaryColor
+					self.previousButton?.titleLabel?.textColor = colors?.primaryColor
+					self.playButton?.layer.borderColor = colors?.secondaryColor.CGColor
+					self.artworkView?.pushTransition(0.4)
+					self.artworkView!.kf_setImageWithURL(self.getAlbumArt(track))
+					}, completion: nil)
+			})
+
+			currentTrackID = currentTrack?.identifier
 
 			self.artistLabel?.hidden = false
 			self.nameLabel?.hidden = false
-			self.artworkView?.image = UIImage(data: artworkURL!)
-			self.artistLabel?.text = "By " + artists.name
-			self.nameLabel?.text = currentTrack?.name
 		}
 	}
 	override func viewDidAppear(animated: Bool) {
@@ -136,33 +138,19 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate {
 		}
 	}
 
-	func initialUpdates() {
-		let userDefaults = NSUserDefaults.standardUserDefaults()
-
-		if let sessionObj: AnyObject = userDefaults.objectForKey("SpotifySession") {
-			let sessionDataObj = sessionObj as! NSData
-			let firstTimeSession = NSKeyedUnarchiver.unarchiveObjectWithData(sessionDataObj) as! SPTSession
-			self.session = firstTimeSession
-			didLogin(firstTimeSession)
-		}
-	}
-
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-	func playNewSong() {
-	}
-	func shouldLogin() {
-		print("I be log in")
-		auth = SPTAuth.defaultInstance()
-		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
-		auth!.redirectURL = NSURL(string: "simplyfy://login")
-		auth!.requestedScopes = [SPTAuthStreamingScope]
-		UIApplication.sharedApplication().openURL(auth!.loginURL)
-	}
-	func didLogin(session: SPTSession) {
-		print("did login")
-		self.session = session
+}
+extension UIView {
+	func pushTransition(duration: CFTimeInterval) {
+		let animation: CATransition = CATransition()
+		animation.timingFunction = CAMediaTimingFunction(name:
+				kCAMediaTimingFunctionEaseInEaseOut)
+		animation.type = kCATransitionPush
+		animation.subtype = kCATransitionFromTop
+		animation.duration = duration
+		self.layer.addAnimation(animation, forKey: kCATransitionPush)
 	}
 }

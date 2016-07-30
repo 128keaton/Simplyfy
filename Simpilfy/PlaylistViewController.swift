@@ -8,21 +8,20 @@
 
 import UIKit
 import Foundation
+import MBProgressHUD
+
 class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 
 	var session: SPTSession?
 
-	var auth: SPTAuth?
-	var playlists: [SPTPartialPlaylist]?
+	var playlists: [SPTPartialPlaylist]? = []
 	var selectedPlaylist: SPTPartialPlaylist?
 	var sessionManager: SessionManager?
 
 	override func viewDidLoad() {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaylistViewController.loginSuccessful), name: "didLogin", object: nil)
 		super.viewDidLoad()
-		UINavigationBar.appearance().barStyle = .Black
-		UIApplication.sharedApplication().statusBarStyle = .LightContent
-		auth = SPTAuth.defaultInstance()
+
 		self.setupAuthorization()
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
@@ -33,19 +32,12 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{ return UIStatusBarStyle.LightContent }
 	func setupAuthorization() {
-		let homeViewController = self.parentViewController?.childViewControllers[0].childViewControllers[0] as! HomeViewController
 
-		self.session = homeViewController.session
-		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
-		auth!.redirectURL = NSURL(string: "simplyfy://login")
-		auth!.requestedScopes = [SPTAuthStreamingScope]
 		sessionManager = SessionManager()
-		sessionManager?.auth = self.auth
-		if session?.isValid() == false {
-			sessionManager?.getSession()
-		}
-		self.fetchPlaylists()
-		// setupSpotify()
+		sessionManager?.auth = SPTAuth.defaultInstance()
+		sessionManager?.delegate = self
+		MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+		sessionManager?.getSession()
 	}
 
 	func loginSuccessful() {
@@ -60,6 +52,13 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 				self.getAllPlaylists(self.session!, playlistList: list!, callback: { playlists in
 					self.playlists = playlists
 					self.tableView.reloadData()
+					UIView.transitionWithView(self.view,
+						duration: 0.15,
+						options: [.CurveEaseInOut, .TransitionCrossDissolve],
+						animations: { () -> Void in
+							self.tableView.reloadRowsAtIndexPaths(self.tableView.indexPathsForVisibleRows!, withRowAnimation: .None)
+						}, completion: nil)
+					MBProgressHUD.hideHUDForView(self.view, animated: true)
 				})
 			}
 			if error != nil {
@@ -67,20 +66,24 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 				print(error)
 				self.sessionManager?.getSession()
 				if (error.description.containsString("Code=-1012")) {
-					self.sessionManager?.didError()
+					print("Login error")
+					self.sessionManager?.getSession()
 				} else {
 					print("Desc: \(error.description)")
 				}
 			}
 		})
 	}
+
 	func doSomethingWithSession(session: SPTSession) {
 		self.session = session
 		self.performSelector(#selector(PlaylistViewController.fetchPlaylists), withObject: nil, afterDelay: 1.0)
+		self.tableView.reloadData()
+		print("did session")
 	}
 	func shouldLogin() {
 		print("I be log in")
-		UIApplication.sharedApplication().openURL(auth!.loginURL)
+		UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
 	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "toSong" {
@@ -112,6 +115,7 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 			for i in 0 ..< playlistList.items.count {
 				playlists.append(playlistList.items[i] as! SPTPartialPlaylist)
 			}
+
 			print(playlists.count)
 			callback(playlists)
 		}

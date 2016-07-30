@@ -17,6 +17,15 @@ class SessionManager: NSObject {
 		var goodSession: SPTSession?
 
 		let userDefaults = NSUserDefaults.standardUserDefaults()
+		SPTAuth.defaultInstance().sessionUserDefaultsKey = "SpotifySession"
+		SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: kTokenRefreshServiceURL)
+		SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: kTokenSwapURL)
+		SPTAuth.defaultInstance().sessionUserDefaultsKey = "SpotifySession"
+		SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: kTokenRefreshServiceURL)
+		SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: kTokenSwapURL)
+		SPTAuth.defaultInstance().clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
+		SPTAuth.defaultInstance().redirectURL = NSURL(string: "simplyfy://login")
+		SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope]
 
 		if let sessionObj: AnyObject = userDefaults.objectForKey("SpotifySession") { // session available
 			let sessionDataObj = sessionObj as! NSData
@@ -24,7 +33,8 @@ class SessionManager: NSObject {
 			let session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionDataObj) as! SPTSession
 
 			if !session.isValid() && auth != nil {
-				auth!.renewSession(session, callback: { (error: NSError!, renewdSession: SPTSession!) -> Void in
+
+				SPTAuth.defaultInstance().renewSession(session, callback: { (error: NSError!, renewdSession: SPTSession!) -> Void in
 					if error == nil {
 						let sessionData = NSKeyedArchiver.archivedDataWithRootObject(session)
 						userDefaults.setObject(sessionData, forKey: "SpotifySession")
@@ -34,11 +44,12 @@ class SessionManager: NSObject {
 						self.delegate?.doSomethingWithSession(goodSession!)
 					} else {
 						print("error refreshing session")
+						self.didError()
 					}
 				})
 			} else {
 				print("session valid")
-				auth!.renewSession(session, callback: { (error: NSError!, renewdSession: SPTSession!) -> Void in
+				SPTAuth.defaultInstance().renewSession(session, callback: { (error: NSError!, renewdSession: SPTSession!) -> Void in
 					if error == nil {
 						let sessionData = NSKeyedArchiver.archivedDataWithRootObject(session)
 						userDefaults.setObject(sessionData, forKey: "SpotifySession")
@@ -48,23 +59,20 @@ class SessionManager: NSObject {
 						self.delegate?.doSomethingWithSession(goodSession!)
 					} else {
 						print("error refreshing session")
+						self.didError()
 					}
 				})
-				delegate?.doSomethingWithSession(goodSession!)
+				delegate?.doSomethingWithSession(session)
 				// didLogin(session)
 			}
 		} else {
 			// UI updates
 
-			self.performSelector(#selector(HomeViewController.shouldLogin), withObject: nil, afterDelay: 0.2)
+			didError()
 		}
 	}
 	func didError() {
-		auth = SPTAuth.defaultInstance()
-		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
-		auth!.redirectURL = NSURL(string: "simplyfy://login")
-		auth!.requestedScopes = [SPTAuthStreamingScope]
-		UIApplication.sharedApplication().openURL(auth!.loginURL)
+		UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
 	}
 }
 

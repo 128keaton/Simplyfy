@@ -13,14 +13,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SPTAudioStreamingDelegate
 
 	var window: UIWindow?
 
+	let kTokenSwapURL = "https://peaceful-sierra-1249.herokuapp.com/swap"
+	let kTokenRefreshServiceURL = "https://peaceful-sierra-1249.herokuapp.com/refresh"
 	var auth: SPTAuth?
 	var playController: PlayController?
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
 		auth = SPTAuth.defaultInstance()
 		playController = PlayController()
-		UIApplication.sharedApplication().statusBarStyle = .LightContent
-		UINavigationBar.appearance().barStyle = .Black
+		SPTAuth.defaultInstance().sessionUserDefaultsKey = "SpotifySession"
+		SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: kTokenRefreshServiceURL)
+		SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: kTokenSwapURL)
 		// Override point for customization after application launch.
 		return true
 	}

@@ -19,13 +19,16 @@ class AlbumCell: UICollectionViewCell {
 
 	required init(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)!
-
-		front = UIImageView(frame: self.frame)
+		let smallFrame = CGRectMake(0, 0, 60, 60)
+		front = UIImageView(frame: smallFrame)
 		front.contentMode = UIViewContentMode.ScaleAspectFit
 		self.contentView.addSubview(front)
 
-		back = UILabel(frame: self.frame)
-		back.text = "PLAY"
+		back = UILabel(frame: smallFrame)
+
+		back.font = UIFont.fontAwesomeOfSize(30)
+		back.text = String.fontAwesomeIconWithName(.Play)
+		back.textAlignment = .Center
 		back.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
 		back.textColor = UIColor.whiteColor()
 		back.hidden = true

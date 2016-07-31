@@ -31,7 +31,7 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	}
 
 	func setupAuthorization() {
-		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0] as? HomeViewController
+		homeViewController = ((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! SideBarController).homeViewController
 
 		self.session = homeViewController!.session
 
@@ -51,7 +51,13 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 					self.playlist = snapshot as! SPTPlaylistSnapshot
 
 					self.getTracks(self.session, trackList: self.playlist.firstTrackPage, callback: { tracks in
+												var playlistTracks: [SPTPlaylistTrack] = []
 						for track in tracks {
+							playlistTracks.append(track as! SPTPlaylistTrack)
+						}
+
+						playlistTracks.sortInPlace({ $0.addedAt.compare($1.addedAt) == NSComparisonResult.OrderedDescending })
+						for track in playlistTracks {
 							self.allTracks?.append(track)
 						}
 						self.tableView.reloadData()

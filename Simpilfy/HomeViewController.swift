@@ -26,9 +26,13 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 	@IBOutlet var playButton: UIButton?
 	@IBOutlet var previousButton: UIButton?
 	@IBOutlet var nextButton: UIButton?
+	@IBOutlet var songProgress: UISlider?
 
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		
 		setupButtons()
 		manager = SessionManager()
 		manager?.delegate = self
@@ -52,7 +56,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 	}
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "toSong" {
-			let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
+			let currentPlaylist = (self.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
 			let songSelection = segue.destinationViewController.childViewControllers[0] as! SongSelectionViewController
 			songSelection.partialPlaylist = currentPlaylist
 			songSelection.fromHome = true
@@ -63,11 +67,10 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 		self.session = session
 	}
 	override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-		let currentPlaylist = (self.parentViewController?.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist
-		if currentPlaylist != nil {
-			return true
+		guard ((self.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist != nil) else {
+			return false
 		}
-		return false
+		return true
 	}
 
 	@IBAction func pausePlay() {
@@ -114,24 +117,46 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 					self.artistLabel?.pushTransition(0.4)
 					self.artistLabel?.text = "By " + artists.name
 					self.artistLabel?.textColor = colors?.secondaryColor
+
 					self.nameLabel?.pushTransition(0.4)
 					self.nameLabel?.text = (self.currentTrack?.name)! + " "
 					self.nameLabel?.textColor = colors?.primaryColor
+
+					if self.playButton?.titleLabel?.text != String.fontAwesomeIconWithName(.Pause) {
+						self.playButton?.titleLabel?.textColor = colors?.primaryColor
+
+						self.playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
+						self.playButton?.setTitleColor(colors?.primaryColor, forState: .Normal)
+					}
+
 					self.nextButton?.titleLabel?.textColor = colors?.primaryColor
+					self.nextButton?.setTitleColor(colors?.secondaryColor, forState: .Highlighted)
+
 					self.playButton?.titleLabel?.textColor = colors?.primaryColor
+					self.playButton?.setTitleColor(colors?.secondaryColor, forState: .Highlighted)
+
 					self.previousButton?.titleLabel?.textColor = colors?.primaryColor
+					self.previousButton?.setTitleColor(colors?.secondaryColor, forState: .Highlighted)
+
 					self.playButton?.layer.borderColor = colors?.secondaryColor.CGColor
+
 					self.artworkView?.pushTransition(0.4)
+
 					self.artworkView!.kf_setImageWithURL(self.getAlbumArt(track))
 					}, completion: nil)
 			})
-
+			songProgress?.maximumValue = Float(track.duration)
 			currentTrackID = currentTrack?.identifier
+			let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+			dispatch_async(dispatch_get_global_queue(priority, 0)) {
+			}
 
 			self.artistLabel?.hidden = false
 			self.nameLabel?.hidden = false
 		}
 	}
+
+
 	override func viewDidAppear(animated: Bool) {
 		if player?.isPlaying == true {
 			playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)

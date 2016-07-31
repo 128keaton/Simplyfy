@@ -52,7 +52,7 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		}
 	}
 	func setupAuthorization() {
-		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController?.childViewControllers[0] as? HomeViewController
+		homeViewController = ((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! SideBarController).homeViewController
 		MBProgressHUD.showHUDAddedTo(self.view, animated: true)
 		self.session = homeViewController!.session
 		sessionManager?.getSession()
@@ -113,9 +113,16 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 					self.playlist = snapshot as! SPTPlaylistSnapshot
 
 					self.getTracks(self.session, trackList: self.playlist.firstTrackPage, callback: { tracks in
+						var playlistTracks: [SPTPlaylistTrack] = []
 						for track in tracks {
+							playlistTracks.append(track as! SPTPlaylistTrack)
+						}
+
+						playlistTracks.sortInPlace({ $0.addedAt.compare($1.addedAt) == NSComparisonResult.OrderedDescending })
+						for track in playlistTracks {
 							self.allTracks?.append(track)
 						}
+
 						self.collectionView?.reloadData()
 						MBProgressHUD.hideHUDForView(self.view, animated: true)
 					})

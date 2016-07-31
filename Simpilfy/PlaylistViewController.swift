@@ -50,7 +50,8 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 			if list != nil {
 				print("list aint nil")
 				self.getAllPlaylists(self.session!, playlistList: list!, callback: { playlists in
-					self.playlists = playlists
+					self.playlists = playlists.sort { $0.name < $1.name }
+
 					self.tableView.reloadData()
 					UIView.transitionWithView(self.view,
 						duration: 0.15,

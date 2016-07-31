@@ -31,6 +31,7 @@
 		8A2AC50B1D4A356F00BC7BCE /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC50A1D4A356F00BC7BCE /* SessionManager.swift */; };
 		8A2AC50D1D4AAF3B00BC7BCE /* AlbumSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC50C1D4AAF3B00BC7BCE /* AlbumSelectionViewController.swift */; };
 		8A2AC50F1D4AC74A00BC7BCE /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AC50E1D4AC74A00BC7BCE /* AlbumCell.swift */; };
+		8AC4FF0F1D4DAB3800258017 /* SideBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC4FF0E1D4DAB3800258017 /* SideBarController.swift */; };
 		9AFBDF8F5C30E8F7DA6D850E /* Pods_SimpilfyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978213E3BD45D6BC990940E3 /* Pods_SimpilfyUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +85,7 @@
 		8A2AC50C1D4AAF3B00BC7BCE /* AlbumSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumSelectionViewController.swift; sourceTree = "<group>"; };
 		8A2AC50E1D4AC74A00BC7BCE /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		8A2AC5101D4B0A8500BC7BCE /* Nuke.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nuke.framework; path = "../../Library/Developer/Xcode/DerivedData/Simpilfy-ahmahiizzveimgahjzxtcqmptapm/Build/Products/Debug-iphonesimulator/Nuke/Nuke.framework"; sourceTree = "<group>"; };
+		8AC4FF0E1D4DAB3800258017 /* SideBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarController.swift; sourceTree = "<group>"; };
 		8EE4D22AAF79EBED0167E96E /* Pods-SimpilfyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpilfyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimpilfyTests/Pods-SimpilfyTests.release.xcconfig"; sourceTree = "<group>"; };
 		978213E3BD45D6BC990940E3 /* Pods_SimpilfyUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpilfyUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31A8E41BF2C2E2427A66BC0 /* Pods-SimpilfyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpilfyUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimpilfyUITests/Pods-SimpilfyUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				8A11A6831D48150A00D893C2 /* HomeViewController.swift */,
 				8A2AC50A1D4A356F00BC7BCE /* SessionManager.swift */,
 				8A2AC4FF1D49057800BC7BCE /* PlayController.swift */,
+				8AC4FF0E1D4DAB3800258017 /* SideBarController.swift */,
 				8A11A6BD1D485C3900D893C2 /* Globals.swift */,
 				8A11A6851D48150A00D893C2 /* PlaylistViewController.swift */,
 				8A11A6871D48150A00D893C2 /* Main.storyboard */,
@@ -508,6 +511,7 @@
 				8A2AC5071D49336000BC7BCE /* FontAwesome.swift in Sources */,
 				8A11A6841D48150A00D893C2 /* HomeViewController.swift in Sources */,
 				8A2AC50B1D4A356F00BC7BCE /* SessionManager.swift in Sources */,
+				8AC4FF0F1D4DAB3800258017 /* SideBarController.swift in Sources */,
 				8A2AC50D1D4AAF3B00BC7BCE /* AlbumSelectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

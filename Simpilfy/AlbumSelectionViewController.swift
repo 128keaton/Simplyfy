@@ -52,9 +52,9 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		}
 	}
 	func setupAuthorization() {
-		homeViewController = ((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! SideBarController).homeViewController
+
 		MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-		self.session = homeViewController!.session
+		session = (UIApplication.sharedApplication().delegate as! AppDelegate).homeViewController?.session
 		sessionManager?.getSession()
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 		auth!.redirectURL = NSURL(string: "simplyfy://login")
@@ -157,6 +157,24 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 	func doSomethingWithSession(session: SPTSession) {
 		self.session = session
 	}
+	override func viewDidAppear(animated: Bool) {
+
+		if ((manager?.isPlaying) == true && NSUserDefaults.standardUserDefaults().stringForKey("playlistName") == self.playlist.name) {
+			let song = manager?.getCurrentSong()
+			let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song!))!, inSection: 0)
+
+			if previousIndexPath != nil {
+
+				self.collectionView?.reloadItemsAtIndexPaths([shufflePath, previousIndexPath!])
+			} else {
+				if self.collectionView?.cellForItemAtIndexPath(shufflePath) != nil {
+					self.collectionView?.reloadItemsAtIndexPaths([shufflePath])
+				}
+			}
+		}
+		NSUserDefaults.standardUserDefaults().setObject(playlist.name, forKey: "playlistName")
+		NSUserDefaults.standardUserDefaults().synchronize()
+	}
 	override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 
 		if playerIntitalized == false {
@@ -173,14 +191,22 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 			manager?.beginPlaying(true)
 			manager?.play()
 		}
-		if previousIndexPath != nil {
-			let previousCell = self.collectionView?.cellForItemAtIndexPath(previousIndexPath!) as! AlbumCell
-			previousCell.tapped()
+
+		if ((manager?.isPlaying) == true && NSUserDefaults.standardUserDefaults().stringForKey("playlistName") == self.playlist.name) {
+			let song = manager?.getCurrentSong()
+			let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song!))!, inSection: 0)
+
+			if previousIndexPath != nil {
+				self.collectionView?.reloadItemsAtIndexPaths([shufflePath, previousIndexPath!])
+			} else {
+				self.collectionView?.reloadSections(NSIndexSet(index: 0))
+			}
+		} else {
+			let song = manager?.getCurrentSong()
+			let shufflePath = NSIndexPath(forRow: (manager?.songs?.indexOf(song!))!, inSection: 0)
+			self.collectionView?.reloadItemsAtIndexPaths([shufflePath])
 		}
 		previousIndexPath = indexPath
-
-		let cell = self.collectionView?.cellForItemAtIndexPath(indexPath) as! AlbumCell
-		cell.tapped()
 	}
 
 	override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -200,7 +226,11 @@ class AlbumSelectionController: UICollectionViewController, SessionManagerDelega
 		let track = allTracks![indexPath.row]
 
 		cell.front.kf_setImageWithURL(getAlbumArt(track))
-
+		if manager?.isPlaying == true {
+			if track.name == manager?.getCurrentSong().name {
+				cell.tapped()
+			}
+		}
 		return cell
 	}
 }

@@ -9,7 +9,8 @@
 import UIKit
 import Kingfisher
 import UIImageColors
-class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionManagerDelegate {
+import SlideMenuControllerSwift
+class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionManagerDelegate, SlideMenuControllerDelegate {
 
 	var session: SPTSession?
 	var player: PlayController?
@@ -27,16 +28,17 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 	@IBOutlet var previousButton: UIButton?
 	@IBOutlet var nextButton: UIButton?
 	@IBOutlet var songProgress: UISlider?
+	@IBOutlet var playlistName: UILabel?
+	@IBOutlet var menuButton: UIButton?
 
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		
+
 		setupButtons()
 		manager = SessionManager()
 		manager?.delegate = self
 		manager?.getSession()
+		self.setNeedsStatusBarAppearanceUpdate()
 		self.view.bringSubviewToFront(artworkView!)
 		player = (UIApplication.sharedApplication().delegate as! AppDelegate).playController
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
@@ -63,9 +65,13 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 			songSelection.title = currentPlaylist?.name
 		}
 	}
+	@IBAction func openMenu() {
+		self.openLeft()
+	}
 	func doSomethingWithSession(session: SPTSession) {
 		self.session = session
 	}
+
 	override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
 		guard ((self.parentViewController?.childViewControllers[1] as! PlaylistViewController).selectedPlaylist != nil) else {
 			return false
@@ -102,6 +108,9 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 		}
 		return albumArtworkURL.imageURL
 	}
+	override func prefersStatusBarHidden() -> Bool {
+		return true
+	}
 
 	func updateInformation() {
 		if let track = player?.getCurrentSong() {
@@ -128,6 +137,8 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 						self.playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
 						self.playButton?.setTitleColor(colors?.primaryColor, forState: .Normal)
 					}
+					self.playlistName?.textColor = colors?.secondaryColor
+					self.menuButton?.tintColor = colors?.primaryColor
 
 					self.nextButton?.titleLabel?.textColor = colors?.primaryColor
 					self.nextButton?.setTitleColor(colors?.secondaryColor, forState: .Highlighted)
@@ -138,6 +149,7 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 					self.previousButton?.titleLabel?.textColor = colors?.primaryColor
 					self.previousButton?.setTitleColor(colors?.secondaryColor, forState: .Highlighted)
 
+					self.playlistName!.text = "PLAYING FROM: " + NSUserDefaults.standardUserDefaults().stringForKey("playlistName")!
 					self.playButton?.layer.borderColor = colors?.secondaryColor.CGColor
 
 					self.artworkView?.pushTransition(0.4)
@@ -156,11 +168,11 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 		}
 	}
 
-
 	override func viewDidAppear(animated: Bool) {
 		if player?.isPlaying == true {
 			playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
 		}
+		self.setNeedsStatusBarAppearanceUpdate()
 	}
 
 	override func didReceiveMemoryWarning() {

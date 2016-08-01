@@ -33,7 +33,7 @@ class PlayController: NSObject, SPTAudioStreamingDelegate {
 		auth!.clientID = "7fedf5f10ea84f069aae21eb9e06b73b"
 		auth!.redirectURL = NSURL(string: "simplyfy://login")
 		auth!.requestedScopes = [SPTAuthStreamingScope]
-		let rootViewController = ((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! SideBarController).homeViewController
+		let rootViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).homeViewController
 		self.session = rootViewController!.session
 	}
 

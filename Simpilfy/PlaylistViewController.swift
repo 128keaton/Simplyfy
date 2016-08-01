@@ -97,6 +97,12 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 			songSelection.title = selectedPlaylist?.name
 		}
 	}
+	@IBAction func openMenu() {
+		((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! ContainerViewController).openLeft()
+	}
+	@IBAction func cancelToPlayersViewController(segue: UIStoryboardSegue) {
+		print("unwind dammit")
+	}
 	func getAllPlaylists(session: SPTSession, playlistList: SPTListPage, callback: (Array<SPTPartialPlaylist> -> Void)) {
 		// recursive case, if has next page, get it, then call this with a callback that assumes that this returns all playlist pages, and then callback again so that function that called this can get all playlist pages that this has
 		if (playlistList.hasNextPage) {
@@ -124,6 +130,7 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		selectedPlaylist = self.playlists![indexPath.row]
+
 		self.performSegueWithIdentifier("toAlbum", sender: nil)
 	}
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

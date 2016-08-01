@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SlideMenuControllerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, SPTAudioStreamingDelegate {
@@ -17,6 +18,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SPTAudioStreamingDelegate
 	let kTokenRefreshServiceURL = "https://peaceful-sierra-1249.herokuapp.com/refresh"
 	var auth: SPTAuth?
 	var playController: PlayController?
+	var homeViewController: HomeViewController?
+	var playlistViewController: PlaylistViewController?
+	var slideMenuController: ContainerViewController?
+	var playlistNav: UINavigationController?
+
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
 		auth = SPTAuth.defaultInstance()
@@ -25,6 +31,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SPTAudioStreamingDelegate
 		SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: kTokenRefreshServiceURL)
 		SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: kTokenSwapURL)
 		// Override point for customization after application launch.
+
+		let storyboard = UIStoryboard(name: "Main", bundle: nil)
+		homeViewController = storyboard.instantiateViewControllerWithIdentifier("HomeViewController") as? HomeViewController
+		playlistNav = storyboard.instantiateViewControllerWithIdentifier("PlaylistViewController") as? UINavigationController
+		playlistViewController = playlistNav!.childViewControllers[0] as? PlaylistViewController
+		let menu = storyboard.instantiateViewControllerWithIdentifier("Menu") as? MenuController
+
+		slideMenuController = ContainerViewController(mainViewController: homeViewController!, leftMenuViewController: menu!, rightMenuViewController: playlistViewController!)
+
+		slideMenuController!.delegate = homeViewController
+		slideMenuController!.automaticallyAdjustsScrollViewInsets = true
+		self.window?.rootViewController = slideMenuController
+		self.window?.makeKeyAndVisible()
+
 		return true
 	}
 	func openURL(url: NSURL) {

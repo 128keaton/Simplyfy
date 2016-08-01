@@ -31,7 +31,7 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	}
 
 	func setupAuthorization() {
-		homeViewController = ((UIApplication.sharedApplication().delegate as! AppDelegate).window?.rootViewController as! SideBarController).homeViewController
+		homeViewController = (UIApplication.sharedApplication().delegate as! AppDelegate).homeViewController
 
 		self.session = homeViewController!.session
 
@@ -51,7 +51,7 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 					self.playlist = snapshot as! SPTPlaylistSnapshot
 
 					self.getTracks(self.session, trackList: self.playlist.firstTrackPage, callback: { tracks in
-												var playlistTracks: [SPTPlaylistTrack] = []
+						var playlistTracks: [SPTPlaylistTrack] = []
 						for track in tracks {
 							playlistTracks.append(track as! SPTPlaylistTrack)
 						}
@@ -132,7 +132,14 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 	func randomInt(min: Int, max: Int) -> Int {
 		return min + Int(arc4random_uniform(UInt32(max - min + 1)))
 	}
-	@IBAction func close() {
+
+	/*@IBAction func close() {
+	 let parent = self.parentViewController
+	 self.dismissViewControllerAnimated(true, completion: nil)
+	 self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+
+	 }*/
+	@IBAction func toAlbum() {
 		self.dismissViewControllerAnimated(true, completion: nil)
 	}
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -161,7 +168,7 @@ class SongSelectionViewController: UITableViewController, SPTAudioStreamingDeleg
 		} else if fromHome == true {
 			self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 		} else {
-			self.tableView.reloadRowsAtIndexPaths([shufflePath], withRowAnimation: .Automatic)
+			self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 		}
 		print("Parent VC: \(self.parentViewController). Parent parent: \(self.parentViewController?.parentViewController)")
 		previousIndexPath = shufflePath

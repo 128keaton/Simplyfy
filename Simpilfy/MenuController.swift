@@ -15,16 +15,12 @@ class MenuController: UITableViewController {
 
 	var home: HomeViewController?
 	var playlist: UIViewController?
+	@IBOutlet var artworkView: UIImageView?
 	override func viewDidLoad() {
+		UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
 		menu = (UIApplication.sharedApplication().delegate as! AppDelegate).slideMenuController
 		home = (UIApplication.sharedApplication().delegate as! AppDelegate).homeViewController
 		playlist = self.storyboard?.instantiateViewControllerWithIdentifier("PlaylistViewController")
-		let glitchLabel = GlitchLabel(frame: CGRectMake(0, 0, (self.tableView.tableFooterView?.frame.width)!, (self.tableView.tableFooterView?.frame.height)!))
-		glitchLabel.textAlignment = .Center
-		glitchLabel.text = "DOPE"
-
-		glitchLabel.center = (self.tableView.tableFooterView?.center)!
-		self.tableView.tableFooterView?.addSubview(glitchLabel)
 
 		print("yay?")
 	}
@@ -32,6 +28,11 @@ class MenuController: UITableViewController {
 		super.viewDidLayoutSubviews()
 
 		self.view.layoutIfNeeded()
+	}
+	override func viewDidAppear(animated: Bool) {
+		if (home?.player?.isPlaying == true) {
+			self.artworkView!.kf_setImageWithURL(home!.getAlbumArt(home!.currentTrack!))
+		}
 	}
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		switch indexPath.row {
@@ -45,6 +46,9 @@ class MenuController: UITableViewController {
 		default:
 			break
 		}
+	}
+	override func preferredStatusBarStyle() -> UIStatusBarStyle {
+		return UIStatusBarStyle.LightContent
 	}
 }
 

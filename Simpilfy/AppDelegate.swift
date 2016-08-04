@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SPTAudioStreamingDelegate
 		SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: kTokenRefreshServiceURL)
 		SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: kTokenSwapURL)
 		// Override point for customization after application launch.
-
+		UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
 		let storyboard = UIStoryboard(name: "Main", bundle: nil)
 		homeViewController = storyboard.instantiateViewControllerWithIdentifier("HomeViewController") as? HomeViewController
 		playlistNav = storyboard.instantiateViewControllerWithIdentifier("PlaylistViewController") as? UINavigationController

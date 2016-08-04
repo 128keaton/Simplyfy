@@ -17,6 +17,8 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 	var playlists: [SPTPartialPlaylist]? = []
 	var selectedPlaylist: SPTPartialPlaylist?
 	var sessionManager: SessionManager?
+	var playlistOwners: [String]? = []
+	var playlistsTiedWithOwners: Dictionary? = [String: [SPTPartialPlaylist]]()
 
 	override func viewDidLoad() {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaylistViewController.loginSuccessful), name: "didLogin", object: nil)
@@ -51,7 +53,10 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 				print("list aint nil")
 				self.getAllPlaylists(self.session!, playlistList: list!, callback: { playlists in
 					self.playlists = playlists.sort { $0.name < $1.name }
-
+					for user in(self.playlistsTiedWithOwners?.keys)! {
+						let theUser = user as String
+						self.playlistOwners?.append(theUser)
+					}
 					self.tableView.reloadData()
 					UIView.transitionWithView(self.view,
 						duration: 0.15,
@@ -111,6 +116,27 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 					self.getAllPlaylists(session, playlistList: l, callback: { playlists in
 						var p = playlists
 						for i in 0 ..< playlistList.items.count {
+							let ownerName = (playlistList.items[i] as! SPTPartialPlaylist).owner.canonicalUserName
+							if (self.playlistOwners?.contains(ownerName) == false) {
+								print("Appending:     \( ownerName)")
+								self.playlistOwners?.append(ownerName)
+							}
+
+							if let playlistsFromOwner = self.playlistsTiedWithOwners![ownerName] {
+								var newPlaylists = playlistsFromOwner
+
+								if !newPlaylists.contains(playlistList.items[i] as! SPTPartialPlaylist) {
+									print("Adding \((playlistList.items[i] as! SPTPartialPlaylist).name)")
+									newPlaylists.append(playlistList.items[i] as! SPTPartialPlaylist)
+								}
+								self.playlistsTiedWithOwners![ownerName] = newPlaylists
+							} else {
+								var newPlaylists: [SPTPartialPlaylist]? = []
+
+								newPlaylists?.append(playlistList.items[i] as! SPTPartialPlaylist)
+								self.playlistsTiedWithOwners![ownerName] = newPlaylists
+							}
+
 							p.append(playlistList.items[i] as! SPTPartialPlaylist)
 						}
 						callback(p)
@@ -120,6 +146,27 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 		} else { // base case, just get all the playlists, then callback so function that called gets all playlists
 			var playlists = Array<SPTPartialPlaylist>()
 			for i in 0 ..< playlistList.items.count {
+				let ownerName = (playlistList.items[i] as! SPTPartialPlaylist).owner.canonicalUserName
+				if (self.playlistOwners?.contains(ownerName) == false) {
+					print("Appending:     \( ownerName)")
+					self.playlistOwners?.append(ownerName)
+				}
+
+				if let playlistsFromOwner = self.playlistsTiedWithOwners![ownerName] {
+					var newPlaylists = playlistsFromOwner
+
+					if !newPlaylists.contains({ $0.name == playlistList.items[i].name }) {
+						print("Adding \((playlistList.items[i] as! SPTPartialPlaylist).name)")
+						newPlaylists.append(playlistList.items[i] as! SPTPartialPlaylist)
+					}
+					self.playlistsTiedWithOwners![ownerName] = newPlaylists
+				} else {
+					var newPlaylists: [SPTPartialPlaylist]? = []
+
+					newPlaylists?.append(playlistList.items[i] as! SPTPartialPlaylist)
+					self.playlistsTiedWithOwners![ownerName] = newPlaylists
+				}
+
 				playlists.append(playlistList.items[i] as! SPTPartialPlaylist)
 			}
 
@@ -129,22 +176,40 @@ class PlaylistViewController: UITableViewController, SessionManagerDelegate {
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedPlaylist = self.playlists![indexPath.row]
+		let key = playlistOwners![indexPath.section]
+
+		selectedPlaylist = (self.playlistsTiedWithOwners![key])![indexPath.row]
 
 		self.performSegueWithIdentifier("toAlbum", sender: nil)
 	}
+	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		if playlistOwners![section] == "spotify" {
+			return "Other"
+		} else {
+			return playlistOwners![section] + "'s Playlists"
+		}
+	}
+
+	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		print("Sections: \(playlistsTiedWithOwners?.keys.count)")
+		return (playlistsTiedWithOwners?.keys.count)!
+	}
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if playlists != nil {
-			print("Count darkula: \(playlists!.count)")
-			return (playlists?.count)!
+		if playlistsTiedWithOwners != nil {
+			let key = playlistOwners![section]
+			let tempPlaylists = self.playlistsTiedWithOwners![key]
+			print("\(key):\(tempPlaylists)")
+			return (tempPlaylists!.count)
 		} else {
 			return 0
 		}
 	}
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let key = playlistOwners![indexPath.section]
+
 		let cell = tableView.dequeueReusableCellWithIdentifier("cell")
 
-		let playlist: SPTPartialPlaylist! = playlists![indexPath.row]
+		let playlist: SPTPartialPlaylist! = playlistsTiedWithOwners![key]![indexPath.row]
 
 		if playlist != nil {
 			cell!.textLabel?.text = playlist.name.uppercaseString

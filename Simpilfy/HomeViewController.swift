@@ -31,8 +31,23 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 	@IBOutlet var playlistName: UILabel?
 	@IBOutlet var menuButton: UIButton?
 
+	var trackTimer: NSTimer?
+
+	var currentAlbumPlaybackPosition: NSTimeInterval = 0
+	var previousPlaybackPosition: NSTimeInterval = 0
+	var totalDuration: NSTimeInterval = 0
+
+	var progress: Float {
+		get {
+			return Float(currentAlbumPlaybackPosition) / Float(totalDuration)
+		}
+	}
+	private var kvoContext: UInt8 = 1
+	var progressCallback: ((progress: Float) -> ())?
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		UIApplication.sharedApplication().statusBarStyle = .LightContent
 
 		setupButtons()
 		manager = SessionManager()
@@ -44,6 +59,9 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.updateInformation), name: "updateTrack", object: nil)
 
 		// Do any additional setup after loading the view, typically from a nib.
+	}
+	override func preferredStatusBarStyle() -> UIStatusBarStyle {
+		return UIStatusBarStyle.LightContent
 	}
 	func setupButtons() {
 		playButton?.titleLabel?.font = UIFont.fontAwesomeOfSize(30)
@@ -111,11 +129,34 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 	override func prefersStatusBarHidden() -> Bool {
 		return true
 	}
+	func observeAudioStreamingController(controller: SPTAudioStreamingController) {
+
+		controller.addObserver(self, forKeyPath: "currentPlaybackPosition", options: NSKeyValueObservingOptions.New, context: &kvoContext)
+	}
+
+	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
+		if context == &kvoContext {
+			if keyPath == "currentPlaybackPosition" {
+				if let player = object as? SPTAudioStreamingController {
+					if player.currentPlaybackPosition > 0.0 {
+						songProgress?.value = Float(player.currentPlaybackPosition)
+						print(player.currentPlaybackPosition)
+					} else {
+						// NSLog("%f %f %f", currentAlbumPlaybackPosition, player.currentPlaybackPosition, previousPlaybackPosition)
+					}
+				}
+			}
+		}
+	}
+	func timerChanged() {
+		songProgress!.value = Float((player?.player!.currentPlaybackPosition)! / player!.player!.currentTrackDuration)
+	}
 
 	func updateInformation() {
 		if let track = player?.getCurrentSong() {
 
 			currentTrack = track
+			totalDuration = (currentTrack?.duration)!
 			let artists = currentTrack?.artists[0] as! SPTPartialArtist
 
 			UIImage(data: NSData(contentsOfURL: self.getAlbumArt(track))!)!.getColors({ (let colors: UIImageColors?) in
@@ -137,6 +178,14 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 						self.playButton?.setTitle(String.fontAwesomeIconWithName(.Pause), forState: .Normal)
 						self.playButton?.setTitleColor(colors?.primaryColor, forState: .Normal)
 					}
+					if colors?.backgroundColor.isLight() == true {
+						print("Black bar")
+						UIApplication.sharedApplication().statusBarStyle = .LightContent
+					} else {
+						print("Light bar")
+						UIApplication.sharedApplication().statusBarStyle = .Default
+					}
+					self.setNeedsStatusBarAppearanceUpdate()
 					self.playlistName?.textColor = colors?.secondaryColor
 					self.menuButton?.tintColor = colors?.primaryColor
 
@@ -151,7 +200,8 @@ class HomeViewController: UIViewController, SPTAudioStreamingDelegate, SessionMa
 
 					self.playlistName!.text = "PLAYING FROM: " + NSUserDefaults.standardUserDefaults().stringForKey("playlistName")!
 					self.playButton?.layer.borderColor = colors?.secondaryColor.CGColor
-
+					self.trackTimer?.invalidate()
+					self.trackTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(HomeViewController.timerChanged), userInfo: nil, repeats: true)
 					self.artworkView?.pushTransition(0.4)
 
 					self.artworkView!.kf_setImageWithURL(self.getAlbumArt(track))
@@ -189,5 +239,22 @@ extension UIView {
 		animation.subtype = kCATransitionFromTop
 		animation.duration = duration
 		self.layer.addAnimation(animation, forKey: kCATransitionPush)
+	}
+}
+extension UIColor
+{
+	func isLight() -> Bool
+	{
+		let components = CGColorGetComponents(self.CGColor)
+		let brightness = (((components[0] * 299.0) as CGFloat) + ((components[1] * 587.0) as CGFloat) + ((components[2] * 114.0)) as CGFloat) / (1000.0 as CGFloat)
+
+		if brightness < 0.5
+		{
+			return false
+		}
+		else
+		{
+			return true
+		}
 	}
 }
